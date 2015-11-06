@@ -23,6 +23,7 @@ enum Settup {
     Pulsar,
     GliderGun,
     Still,
+    Toad,
 }
 
 impl Settup {
@@ -30,9 +31,11 @@ impl Settup {
         match *self {
             Settup::Random => {
                 let mut rng = rand::thread_rng();
-
                 for index in population.range.clone() {
-                    if rng.gen() { population.status[index] = true }
+                    population.status[index] = match rng.gen() {
+                        true => true,
+                        false => false,
+                    };
                 }
             },
             Settup::Pulsar => {
@@ -43,7 +46,23 @@ impl Settup {
             },
             Settup::Still => {
 
-            }
+            },
+            Settup::Toad => {
+                //
+                // TODO: Update so its places
+                //       toads in the center of the graph
+                //
+                population.status[1272] = true;
+                let mut b = population.adjacent[1272][3];
+                let mut t = population.adjacent[b][0];
+                for _ in 0..2 {
+                    population.status[b] = true;
+                    population.status[t] = true;
+                    b = population.adjacent[b][3];
+                    t = population.adjacent[t][3];
+                }
+                population.status[t] = true;
+            },
         }
     }
 }
